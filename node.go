@@ -1,4 +1,4 @@
-package radixtree
+package trie
 
 type Node struct {
 	char     rune

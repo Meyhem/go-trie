@@ -1,4 +1,4 @@
-package radixtree
+package trie
 
 import (
 	"fmt"
