@@ -9,7 +9,7 @@ type Trie struct {
 }
 
 func NewTrie() *Trie {
-	return &Trie{root: NewNode(rune(0), 0)}
+	return &Trie{root: NewNode(rune(0), nil, 0)}
 }
 
 func (tree *Trie) Insert(key string, value interface{}) {
@@ -21,7 +21,7 @@ func (tree *Trie) Insert(key string, value interface{}) {
 		if child, ok := node.children[r]; ok {
 			node = child
 		} else {
-			new := NewNode(r, level)
+			new := NewNode(r, node, level)
 			node.children[r] = new
 			node = new
 		}
@@ -31,7 +31,7 @@ func (tree *Trie) Insert(key string, value interface{}) {
 	node.terminal = true
 }
 
-func (tree *Trie) FindByKey(key string) (value interface{}, found bool) {
+func (tree *Trie) Find(key string) (value interface{}, found bool) {
 	node, found := tree.findNodeByMask(key)
 
 	if found && node.terminal {
@@ -42,8 +42,24 @@ func (tree *Trie) FindByKey(key string) (value interface{}, found bool) {
 }
 
 func (tree *Trie) ContainsKey(key string) bool {
-	_, found := tree.FindByKey(key)
+	_, found := tree.Find(key)
 	return found
+}
+
+func (tree *Trie) DeleteKey(key string) bool {
+	node, found := tree.findNodeByMask(key)
+	if !found || node == nil || !node.terminal {
+		return false
+	}
+	char := node.char
+	node = node.parent
+	for node.parent != nil && !node.terminal {
+		char = node.char
+		node = node.parent
+	}
+
+	delete(node.children, char)
+	return true
 }
 
 func (tree *Trie) findNodeByMask(mask string) (n *Node, found bool) {
