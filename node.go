@@ -1,26 +1,28 @@
 package trie
 
-import "fmt"
-
+// Node is internal data structure which hold one trie node
 type Node struct {
-	char     rune
+	// char, which node represents
+	char rune
+
+	// child nodes
 	children map[rune]*Node
-	parent   *Node
-	level    uint
 
+	// parent node
+	parent *Node
+
+	// flag whether this node holds key value
 	terminal bool
-	data     interface{}
+
+	// user data
+	data interface{}
 }
 
-func (n Node) String() string {
-	return fmt.Sprintf("'%s' - level: %d", string(n.char), n.level)
-}
-
-func NewNode(char rune, parent *Node, level uint) *Node {
+// NewNode create new instance of Node
+func NewNode(char rune, parent *Node) *Node {
 	return &Node{
 		char:     char,
 		parent:   parent,
-		level:    level,
 		children: make(map[rune]*Node),
 	}
 }

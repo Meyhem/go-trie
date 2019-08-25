@@ -4,14 +4,18 @@ import (
 	"fmt"
 )
 
+// Trie objects holds trie data structure
 type Trie struct {
 	root *Node
 }
 
+// NewTrie instantiates new Trie
 func NewTrie() *Trie {
-	return &Trie{root: NewNode(rune(0), nil, 0)}
+	return &Trie{root: NewNode(rune(0), nil)}
 }
 
+// Insert - inserts specified value under specified key to Trie
+// insertion under same key overrides original value
 func (tree *Trie) Insert(key string, value interface{}) {
 	node := tree.root
 	runes := []rune(key)
@@ -21,7 +25,7 @@ func (tree *Trie) Insert(key string, value interface{}) {
 		if child, ok := node.children[r]; ok {
 			node = child
 		} else {
-			new := NewNode(r, node, level)
+			new := NewNode(r, node)
 			node.children[r] = new
 			node = new
 		}
@@ -31,6 +35,7 @@ func (tree *Trie) Insert(key string, value interface{}) {
 	node.terminal = true
 }
 
+// Find - finds user value under specified key
 func (tree *Trie) Find(key string) (value interface{}, found bool) {
 	node, found := tree.findNodeByMask(key)
 
@@ -41,11 +46,15 @@ func (tree *Trie) Find(key string) (value interface{}, found bool) {
 	return nil, false
 }
 
+// ContainsKey - returns true if specified key is present in structure
+// ignores intermediate nonterminal node findings. It searches only for terminal values
 func (tree *Trie) ContainsKey(key string) bool {
 	_, found := tree.Find(key)
 	return found
 }
 
+// DeleteKey - deletes key and all asociated user data
+// returns true if deletion was successful
 func (tree *Trie) DeleteKey(key string) bool {
 	node, found := tree.findNodeByMask(key)
 	if !found || node == nil || !node.terminal {
